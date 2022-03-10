@@ -1,7 +1,7 @@
 # Portfolio Tracker
 # Skład zespołu: Krzysztof Bober, Szymon Miłosz, Konrad Harasym
 # Aplikacja mobilna
-# Python + Kivy framework, SQLite3 database
+# Python + Kivy framework + API np. CoinGecko, SQLite3 database
 #
 # Aplikacja służąca do śledzenia oraz symulacji inwestycji na rynkach finansowych.
 #  Użytkownik podaje date, wielkość oraz przedmioty transakcji
