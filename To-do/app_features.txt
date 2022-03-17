@@ -1,0 +1,10 @@
+Zakładka transakcji:
+
+
+Zakładka wykresy:
+checkboxy związane z interwałami
+wybór wskaźników
+wybór typu wykresów
+
+Zakładka newsy:
+inne API (Marketaux) zbierające newsy
