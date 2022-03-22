@@ -1,0 +1,47 @@
+<Main>
+
+    tab_width: (self.content.width - 5) / 3
+    do_default_tab: False
+    padding: (5, 5)
+    tab_pos: 'bottom_mid'
+    TabbedPanelItem:
+        text: 'Transakcje'
+        orientation: "vertical"
+        BoxLayout:
+            height: "40dp"
+            size_hint_y: None
+            TextInput:
+                size_hint_x: 20
+            Button:
+                text: "kup"
+                size_hint_x: 25
+    TabbedPanelItem:
+        text: 'Portfel'
+    TabbedPanelItem:
+        text: 'Wiadomości'
+        BoxLayout:
+            orientation: 'vertical'
+            Button:
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1
+                        rectangle: self.x, self.y, self.width, self.height
+                text: 'news 1'
+            Button:
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1
+                        rectangle: self.x, self.y, self.width, self.height
+                text: 'news 2'
+            Button:
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1
+                        rectangle: self.x, self.y, self.width, self.height
+                text: 'news 3'
