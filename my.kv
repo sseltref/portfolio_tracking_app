@@ -17,6 +17,12 @@
                 size_hint_x: 25
     TabbedPanelItem:
         text: 'Portfel'
+        BoxLayout:
+            Image:
+                source: 'foo.png'
+                allow_stretch: True
+                keep_ratio: False
+                size: self.parent.size
     TabbedPanelItem:
         text: 'Wiadomości'
         BoxLayout:
