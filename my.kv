@@ -17,50 +17,12 @@
                 size_hint_x: 25
     TabbedPanelItem:
         text: 'Portfel'
-        FloatLayout:
+        BoxLayout:
             Image:
-                pos_hint: {'center_x': 0.5, 'center_y': 0.8}
-                size_hint: 0.8, 0.3
-                id: _chartimg
-                source: app.img_src
+                source: 'foo.png'
                 allow_stretch: True
                 keep_ratio: False
-                #size: self.parent.size
-            Spinner:
-                size_hint: 0.2, 0.1
-
-                font_size: 0.15 * self.width
-                pos_hint: {'center_x': 0.3, 'center_y': 0.6}
-                text: 'Interval'
-                values: '1h', '4h', '1d', '1wk',
-                on_text:
-                    app.interval = self.text
-            Spinner:
-                size_hint: 0.2, 0.1
-
-                font_size: 0.15 * self.width
-                pos_hint: {'center_x': 0.7, 'center_y': 0.6}
-                text: 'Period'
-                values: '1d', '1wk', '1m', '1y'
-                on_text:
-                    app.period = self.text
-            Spinner:
-                size_hint: 0.2, 0.1
-
-                font_size: 0.15 * self.width
-                pos_hint: {'center_x': 0.5, 'center_y': 0.6}
-                text: 'Asset'
-                values: 'TSLA', 'AAPL', 'BABA'
-                on_text:
-                    app.asset = self.text
-            Button:
-                size_hint: 0.2, 0.1
-
-                font_size: 0.15 * self.width
-                pos_hint: {'center_x': 0.5, 'center_y': 0.4}
-                text: 'Show'
-                on_release:
-                    app.stock_data(app.asset ,app.period,app.interval, 'Open')
+                size: self.parent.size
     TabbedPanelItem:
         text: 'Wiadomości'
         BoxLayout:
