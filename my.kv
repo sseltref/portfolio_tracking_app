@@ -12,9 +12,25 @@
             size_hint_y: None
             TextInput:
                 size_hint_x: 20
+                text: "swap from"
+                on_focus: app.currency1 = self.text
+            TextInput:
+                size_hint_x: 20
+                text: "swap to"
+                on_focus: app.currency2 = self.text
+            TextInput:
+                size_hint_x: 20
+                text: "amount"
+                on_focus: app.volume = self.text
+            TextInput:
+                size_hint_x: 20
+                text: "date"
+                on_focus: app.date = self.text
             Button:
-                text: "kup"
+                text: "submit"
                 size_hint_x: 25
+                on_press: app.make_transaction(app.conn_tr, app.date, app.currency1, app.currency2, app.volume)
+
     TabbedPanelItem:
         text: 'Portfel'
         FloatLayout:

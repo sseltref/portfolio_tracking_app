@@ -11,13 +11,13 @@ def create_connection(db):
 
 	return conn
 
-def make_transaction(conn, tr_date, currency1, currency2, volume, value):
+def make_transaction(conn, tr_date, currency1, currency2, volume):
 	cur = conn.cursor()
-	cur.execute('INSERT INTO history(tr_date, currency1, currency2, volume, value) VALUES (?, ?, ?, ?, ?)', (tr_date, currency1, currency2, volume, value))
+	cur.execute('INSERT INTO history(tr_date, currency1, currency2, volume) VALUES (?, ?, ?, ?)', (tr_date, currency1, currency2, volume))
 	conn.commit()
 
 ''' INSERT INTO tasks(name,priority,status_id,project_id,begin_date,end_date)
               VALUES(?,?,?,?,?,?) '''
 
 conn_tr = create_connection('database.db')
-make_transaction(conn_tr, '31-03-2022', 'USD', 'PLN', 100, 450)
+make_transaction(conn_tr, '31-03-2022', 'USD', 'PLN', 100)
