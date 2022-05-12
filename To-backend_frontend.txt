@@ -1,0 +1,15 @@
+Backend:
+Obliczenie wartości portfela usera
+Obliczenie wartości posiadanych walut
+Wartość portfela historycznie
+Połączenie z API, znalezienie najpopularniejszych walut
+Walidacja amount i date (podanie sekund nie przekształca na datę)
+
+
+
+Frontend:
+Dodawanie transakcji (dokończenie)
+Odświeżanie wykresu
+Wybór spółek z listy
+Wykresy spółek
+Edycja/usuwanie transakcji
