@@ -43,6 +43,7 @@ def random_transactions(n):
 		#print(vol)
 		make_transaction(conn_tr, x.strftime("%d-%m-%y %H:%M:%S"), c1, c2, vol)
 
+'''
 conn_tr = create_connection('database.db')
 #make_transaction(conn_tr, datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S"), 'USD', 'PLN', 100)
 
@@ -51,4 +52,4 @@ print(tr)
 
 #random_transactions(10000)
 
-
+'''
