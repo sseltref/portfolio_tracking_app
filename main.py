@@ -9,6 +9,8 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 from kivy.uix.image import Image
+import sqlite3
+from sqlite3 import Error
 
 class Button(Button):
     pass
@@ -20,6 +22,27 @@ class Main(TabbedPanel):
 class MyApp(App):
     img_src = 'foo.png'
 
+    @staticmethod
+    def create_connection(db):
+        conn = None
+
+        try:
+            conn = sqlite3.connect(db)
+        except Error as e:
+            print(e)
+
+        return conn
+
+    def make_transaction(self, conn, tr_date, currency1, currency2, volume):
+        cur = conn.cursor()
+        cur.execute('INSERT INTO history(tr_date, currency1, currency2, volume) VALUES (?, ?, ?, ?)',
+                    (tr_date, currency1, currency2, volume))
+        conn.commit()
+
+    ''' INSERT INTO tasks(name,priority,status_id,project_id,begin_date,end_date)
+                  VALUES(?,?,?,?,?,?) '''
+
+    conn_tr = create_connection('Database/database.db')
     def stock_data(self, ticker, period, interval, observation):
         ticker = yf.Ticker(ticker)
         ticker_history = ticker.history(period, interval)
