@@ -13,3 +13,6 @@ Odświeżanie wykresu
 Wybór spółek z listy
 Wykresy spółek
 Edycja/usuwanie transakcji
+
+Problem z wykresami:
+stary matplotlib
