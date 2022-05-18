@@ -22,7 +22,8 @@ class Main(TabbedPanel):
 class MyApp(App):
     img_src = 'foo.png'
 
-    def create_connection(self, db):
+    @staticmethod
+    def create_connection(db):
         conn = None
 
         try:
@@ -41,7 +42,7 @@ class MyApp(App):
     ''' INSERT INTO tasks(name,priority,status_id,project_id,begin_date,end_date)
                   VALUES(?,?,?,?,?,?) '''
 
-    conn_tr = create_connection('database.db')
+    conn_tr = create_connection('Database/database.db')
     def stock_data(self, ticker, period, interval, observation):
         ticker = yf.Ticker(ticker)
         ticker_history = ticker.history(period, interval)

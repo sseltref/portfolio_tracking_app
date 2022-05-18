@@ -1,8 +1,0 @@
-table history:
-id
-date
-currency1
-currency2
-quantity
-value
-
