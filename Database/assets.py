@@ -14,6 +14,7 @@ def assets_to_sell():
 		export.append(line[0])
 
 	return export
+	#retuns list of assets available to sell
 
 def value(ticker=None):
 	values = {}
@@ -44,5 +45,27 @@ def value(ticker=None):
 	else:
 		return values[ticker]
 
+	#returns current value of ticker given in function parameter
+	#parameter is empty default, so then output is dictionary with all available tickers
 
-print(value('CHF'))
+def historical_value(ticker):
+	values = {}
+	conn = create_connection('database.db')
+	cur = conn.cursor()
+	v = 0
+
+	cur.execute(f"SELECT * FROM history WHERE currency1='{ticker}' OR currency2='{ticker}'")
+	#print(cur.fetchall())
+	operations = sorted(cur.fetchall(), key=lambda x: x[1])
+	for line in operations:
+		if line[3] == ticker:
+			v -= float(line[4])
+		else:
+			v += float(line[4])
+
+		values[int(line[1])] = round(v, 2)
+		print(line[1], values[line[1]])
+	return values
+	#returns dictionary with historical values (key: data) of one ticker (given in parameter) 
+
+historical_value('CHF')

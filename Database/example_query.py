@@ -41,7 +41,9 @@ def random_transactions(n):
 				break
 		vol = round(uniform(0, 10000),2)
 		#print(vol)
-		make_transaction(conn_tr, x.strftime("%d-%m-%y %H:%M:%S"), c1, c2, vol)
+		#make_transaction(conn_tr, x.strftime("%d-%m-%y %H:%M:%S"), c1, c2, vol)
+		print(conn_tr, int(x.timestamp()), c1, c2, vol)
+		make_transaction(conn_tr, int(x.timestamp()), c1, c2, vol)
 
 '''
 conn_tr = create_connection('database.db')
@@ -50,6 +52,10 @@ conn_tr = create_connection('database.db')
 tr = last_n_days_transactions(conn_tr, 'PLN', (2022, 4, 7), 10)
 print(tr)
 
-#random_transactions(10000)
+#
 
+'''
+'''
+conn_tr = create_connection('database.db')
+random_transactions(10000)
 '''
