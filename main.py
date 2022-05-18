@@ -1,6 +1,6 @@
 import kivy
 kivy.require('2.0.0')
-
+import datetime
 from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.button import Button
@@ -15,12 +15,25 @@ from sqlite3 import Error
 class Button(Button):
     pass
 
+
+
+
 class Main(TabbedPanel):
+
     pass
 
 
 class MyApp(App):
-    img_src = 'foo.png'
+
+    def get_image(self):
+
+        img = 'foo.png'
+
+        return img
+
+    @staticmethod
+    def imgreload():
+        Main.ids.img.source = 'foo.png'
 
     @staticmethod
     def create_connection(db):
@@ -32,6 +45,13 @@ class MyApp(App):
             print(e)
 
         return conn
+
+    def date_to_epoch(self, year, month, day):
+        date = datetime.datetime(int(year),int(month), int(day))
+        date = date.timestamp()
+
+        return date
+
 
     def make_transaction(self, conn, tr_date, currency1, currency2, volume):
         cur = conn.cursor()
@@ -59,6 +79,19 @@ class MyApp(App):
         plt.xlabel('Date', rotation=0)
         plt.savefig('foo.png')
 
+    @staticmethod
+    def assets_to_sell(conn=conn_tr):
+        export = []
+        cur = conn.cursor()
+
+        cur.execute("SELECT DISTINCT currency2 FROM history")
+
+        for line in cur.fetchall():
+            export.append(line[0])
+
+        return export
+
+    assets_held = assets_to_sell()
     def build(self):
         #box = BoxLayout()
         #box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
