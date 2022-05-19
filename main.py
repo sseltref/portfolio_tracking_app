@@ -11,29 +11,24 @@ import matplotlib.pyplot as plt
 from kivy.uix.image import Image
 import sqlite3
 from sqlite3 import Error
+import time
+from kivy.config import Config
 
 class Button(Button):
     pass
 
 
-
-
 class Main(TabbedPanel):
-
     pass
 
 
 class MyApp(App):
+    def update_chart(self):
+        self.apka.ids._chart_img.reload()
 
-    def get_image(self):
 
-        img = 'foo.png'
-
-        return img
-
-    @staticmethod
-    def imgreload():
-        Main.ids.img.source = 'foo.png'
+    def reload_chart(self):
+        Main
 
     @staticmethod
     def create_connection(db):
@@ -64,6 +59,7 @@ class MyApp(App):
 
     conn_tr = create_connection('Database/database.db')
     def stock_data(self, ticker, period, interval, observation):
+        plt.clf()
         ticker = yf.Ticker(ticker)
         ticker_history = ticker.history(period, interval)
 
@@ -93,10 +89,12 @@ class MyApp(App):
 
     assets_held = assets_to_sell()
     def build(self):
-        #box = BoxLayout()
-        #box.add_widget(FigureCanvasKivyAgg(plt.gcf()))
-        #return box
-        return  Main()
+        plt.savefig('foo.png')
+        self.apka = Main()
+        return  self.apka
+
 if __name__ == '__main__':
+    Config.set('graphics', 'width', '400')
+    Config.set('graphics', 'height', '800')
     MyApp().run()
 
