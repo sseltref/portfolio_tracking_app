@@ -1,6 +1,7 @@
 import sqlite3
 from example_query import create_connection
 import yfinance as yf
+import datetime
 
 
 def assets_to_sell():
@@ -68,4 +69,42 @@ def historical_value(ticker):
 	return values
 	#returns dictionary with historical values (key: data) of one ticker (given in parameter) 
 
-historical_value('CHF')
+def portfolio_value():
+	values = {}
+	conn = create_connection('database.db')
+	cur = conn.cursor()
+	v = 0
+
+def transactions_list(ticker=None):
+	conn = create_connection('database.db')
+	cur = conn.cursor()
+
+	
+	if ticker == None:
+		trans = []
+		cur.execute(f"SELECT * FROM history")
+		operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+		for line in operations:
+			trans.append([datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+		return trans
+
+	else:
+		trans = {}
+		trans['buy'] = []
+		trans['sell'] = []
+		cur.execute(f"SELECT * FROM history WHERE currency1='{ticker}'")
+		operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+		for line in operations:
+			trans['sell'].append([datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+
+		cur.execute(f"SELECT * FROM history WHERE currency2='{ticker}'")
+		operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+		for line in operations:
+			trans['buy'].append([datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+
+		return trans
+	#returns dictionary with all transactions of given ticker (sorted by date)
+	#in case of default ticker, function returns all transactions in data order
