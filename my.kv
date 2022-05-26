@@ -1,6 +1,6 @@
 <Main>
 
-    tab_width: (self.content.width - 5) / 3
+    tab_width: (self.content.width - 5) / 4
     do_default_tab: False
     padding: (5, 5)
     tab_pos: 'bottom_mid'
@@ -55,7 +55,7 @@
                 on_press: app.make_transaction(app.conn_tr, app.date_to_epoch(app.dateyear, app.datemonth, app.dateday), app.currency1, app.currency2, app.volume)
 
     TabbedPanelItem:
-        text: 'Portfel'
+        text: 'Notowania'
         FloatLayout:
             Image:
                 pos_hint: {'center_x': 0.5, 'center_y': 0.7}
@@ -102,6 +102,50 @@
                     app.stock_data(app.asset ,app.period,app.interval, 'Open')
                 on_release:
                     app.update_chart()
+    TabbedPanelItem:
+        text: 'Portfel'
+        FloatLayout:
+            Image:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+                size_hint: 1, 0.3
+                id: _chart_img2
+                source: 'foo2.png'
+                allow_stretch: True
+                keep_ratio: False
+                #size: self.parent.size
+            Spinner:
+                size_hint: 0.2, 0.1
+
+                font_size: 0.15 * self.width
+                pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                text: 'Asset'
+                values: app.assets_held
+                on_text:
+                    app.asset = self.text
+            Button:
+                size_hint: 0.2, 0.1
+
+                font_size: 0.15 * self.width
+                pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+                text: 'Show'
+                on_press:
+                    app.historical_value(app.asset)
+                on_release:
+                    app.update_chart(app.value(app.asset))
+            Label:
+                text: "Current value of the asset"
+                pos_hint: {'center_x': 0.3, 'center_y': 0.1}
+            Label:
+                text: "Current value of portfolio"
+                pos_hint: {'center_x': 0.8, 'center_y': 0.1}
+            Label:
+                id: labelval
+                text: ''
+                pos_hint: {'center_x': 0.3, 'center_y': 0.05}
+            Label:
+                id: labelportfolio
+                pos_hint: {'center_x': 0.8, 'center_y': 0.05}
+                text: str(app.current_portfolio_value())
     TabbedPanelItem:
         text: 'Wiadomości'
         BoxLayout:

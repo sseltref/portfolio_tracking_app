@@ -2,10 +2,16 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import pandas as pd
 
+def get_info(ticker):
+    ticker = yf.Ticker(ticker)
+    print(ticker.info)
+
+
+
 def stock_data(ticker, period, interval, observation):
     ticker = yf.Ticker(ticker)
     ticker_history = ticker.history(period, interval)
-    print((ticker_history[observation]))
+    print(ticker.info)
 
     sf = ticker_history[observation]
     df = pd.DataFrame({'Date':sf.index, 'Values':sf.values})
@@ -20,9 +26,10 @@ def stock_data(ticker, period, interval, observation):
     plt.show()
 
 if __name__ == '__main__':
-    stock_data('TSLA', '1y', '1wk', 'Open')
+    #stock_data('TSLA', '1y', '1wk', 'Open')
 
-#plot w kivy z tutorialu, nie działa  from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg - do ogarnięcia
+    get_info("BTC")
+
 '''
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.app import App
