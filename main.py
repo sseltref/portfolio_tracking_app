@@ -58,9 +58,22 @@ class MyApp(App):
                   VALUES(?,?,?,?,?,?) '''
 
     conn_tr = create_connection('Database/database.db')
+
+    @staticmethod
+    def rename_asset(ticker):
+        if ticker == 'USD':
+            return 'USD'
+        elif ticker == 'BTC':
+            return 'BTC-USD'
+        else:
+            return f'{ticker}=X'
+
+
     def stock_data(self, ticker, period, interval, observation):
         plt.clf()
-        ticker = yf.Ticker(ticker)
+
+        ticker = yf.Ticker(MyApp.rename_asset(ticker))
+
         ticker_history = ticker.history(period, interval)
 
         sf = ticker_history[observation]
