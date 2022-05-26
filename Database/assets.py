@@ -2,7 +2,7 @@ import sqlite3
 from example_query import create_connection
 import yfinance as yf
 import datetime
-
+import random
 
 def assets_to_sell():
 	export = []
@@ -69,11 +69,55 @@ def historical_value(ticker):
 	return values
 	#returns dictionary with historical values (key: data) of one ticker (given in parameter) 
 
+def import_tickers():
+	ticker = {}
+	conn = create_connection('tickers.db')
+	cur = conn.cursor()
+	
+	cur.execute(f"SELECT * FROM tickers")
+
+	for line in cur.fetchall():
+		ticker[line[0]] = line[1]
+
+	return ticker
+
 def portfolio_value():
-	values = {}
+	values, v = {}, 0
 	conn = create_connection('database.db')
 	cur = conn.cursor()
-	v = 0
+	
+	cur.execute(f"SELECT * FROM history")
+	operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+	conn.close()
+
+	ticker = import_tickers()
+	#print(ticker)
+
+	for line in operations:
+		date = datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d')
+		#print(line)
+		'sell part'
+		try:
+			if line[2] == 'USD':
+				outcome = float(line[4])
+			else:
+				x = yf.download(ticker[line[2]], date, date)
+				outcome = x['Close'].tolist()[0] * float(line[4])
+				#print(outcome)
+
+			y = yf.download(ticker[line[3]], date, date)
+			income = y['Close'].tolist()[0] * float(line[4])
+
+			v += round(income - outcome, 2)
+			values[line[1]] = v
+
+		except:
+			continue
+
+	return values
+	#returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
+
 
 def transactions_list(ticker=None):
 	conn = create_connection('database.db')
@@ -108,3 +152,25 @@ def transactions_list(ticker=None):
 		return trans
 	#returns dictionary with all transactions of given ticker (sorted by date)
 	#in case of default ticker, function returns all transactions in data order
+
+def news(n=3):
+	to_export = []
+	assets = assets_to_sell()
+
+	conn = create_connection('tickers.db')
+	cur = conn.cursor()
+
+	cur.execute(f"SELECT * FROM tickers")
+
+	for line in cur.fetchall():
+		a = yf.Ticker(line[1])
+		if len(a.news) < 1:
+			continue
+		else:
+			to_export.append([a.news[0]['title'], a.news[0]['link'], datetime.datetime.fromtimestamp(a.news[0]['providerPublishTime']).strftime('%Y-%m-%d')])
+
+	return random.sample(to_export, n)
+	#returns random n (default n=3) news as a list
+
+
+print(portfolio_value())

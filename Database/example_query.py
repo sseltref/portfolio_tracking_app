@@ -33,13 +33,13 @@ def last_n_days_transactions(conn, ticker, date, n):
 def random_transactions(n):
 	currencies = ['USD', 'PLN', 'EUR', 'CHF', 'GBP', 'BTC']
 	for _ in range(n):
-		x = datetime.datetime(int(uniform(2019,2023)), int(uniform(1,13)), int(uniform(1,29)), int(uniform(0,24)), int(uniform(0,60)), int(uniform(0,60)))
+		x = datetime.datetime(int(uniform(2020,2022)), int(uniform(1,13)), int(uniform(1,29)), int(uniform(0,24)), int(uniform(0,60)), int(uniform(0,60)))
 		c1 = choice(currencies)
 		while True:
 			c2 = choice(currencies)
 			if c2 != c1:
 				break
-		vol = round(uniform(0, 10000),2)
+		vol = round(uniform(0, 100),2)
 		#print(vol)
 		#make_transaction(conn_tr, x.strftime("%d-%m-%y %H:%M:%S"), c1, c2, vol)
 		print(conn_tr, int(x.timestamp()), c1, c2, vol)
@@ -55,7 +55,6 @@ print(tr)
 #
 
 '''
-'''
-conn_tr = create_connection('database.db')
-random_transactions(10000)
-'''
+
+#conn_tr = create_connection('database.db')
+#random_transactions(10)
