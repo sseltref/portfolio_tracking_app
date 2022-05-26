@@ -71,7 +71,7 @@ def historical_value(ticker):
 
 def import_tickers():
 	ticker = {}
-	conn = create_connection('tickers.db')
+	conn = create_connection('database.db')
 	cur = conn.cursor()
 	
 	cur.execute(f"SELECT * FROM tickers")
@@ -81,7 +81,24 @@ def import_tickers():
 
 	return ticker
 
-def portfolio_value():
+def current_portfolio_value():
+	ticker = import_tickers()
+	values = value()
+	v = 0
+
+	for line in values:
+		if line == 'USD':
+			v += values[line]
+		else:
+			stock = yf.Ticker(ticker[line])
+			price = stock.info['regularMarketPrice']
+			v += price*values[line]
+
+		#print(line, values[line], v)
+	return round(v, 2)
+	#returns current value of portfolio (in USD)
+
+def portfolio_values():
 	values, v = {}, 0
 	conn = create_connection('database.db')
 	cur = conn.cursor()
@@ -173,4 +190,4 @@ def news(n=3):
 	#returns random n (default n=3) news as a list
 
 
-print(portfolio_value())
+print(current_portfolio_value())
