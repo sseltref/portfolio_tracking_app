@@ -181,7 +181,7 @@ def transactions_list(ticker=None):
 		return trans
 	#returns dictionary with all transactions of given ticker (sorted by date)
 	#in case of default ticker, function returns all transactions in data order
-print(transactions_list())
+
 def news(n=3):
 	to_export = []
 	assets = assets_to_sell()
@@ -202,4 +202,4 @@ def news(n=3):
 	#returns random n (default n=3) news as a list
 
 
-print(portfolio_values())
+print(news(1))

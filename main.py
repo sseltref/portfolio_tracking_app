@@ -14,6 +14,8 @@ from sqlite3 import Error
 import time
 from kivy.config import Config
 from kivy.uix.recycleview import RecycleView
+import random
+import webbrowser
 
 class Button(Button):
     pass
@@ -50,7 +52,10 @@ class Main(TabbedPanel):
 
 
 
+
 class MyApp(App):
+    def browser(self,link):
+        webbrowser.open(link)
     def update_chart(self, x=''):
         self.apka.ids._chart_img.reload()
         self.apka.ids._chart_img2.reload()
@@ -367,6 +372,33 @@ class MyApp(App):
                     [datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
 
             return trans
+
+    def news(self, n=3, conn=conn_tr):
+        try:
+            to_export = []
+            cur = conn.cursor()
+
+            cur.execute(f"SELECT * FROM tickers")
+
+            for line in cur.fetchall():
+                a = yf.Ticker(line[1])
+                if len(a.news) < 1:
+                    continue
+                else:
+                    to_export.append([a.news[0]['title'], a.news[0]['link'],
+                                      datetime.datetime.fromtimestamp(a.news[0]['providerPublishTime']).strftime(
+                                          '%Y-%m-%d')])
+            news = random.sample(to_export, n)
+        except:
+            print("news loading error")
+        self.link1 = news[0][1]
+        self.link2 = news[1][1]
+        self.link3 = news[2][1]
+        self.news1 = news[0][0]
+        self.news2 = news[1][0]
+        self.news3 = news[2][0]
+        return "Wiadomości"
+
     def build(self):
         plt.savefig('foo.png')
         plt.savefig('foo2.png')
