@@ -13,13 +13,42 @@ import sqlite3
 from sqlite3 import Error
 import time
 from kivy.config import Config
+from kivy.uix.recycleview import RecycleView
 
 class Button(Button):
     pass
-
+class RecycleView(RecycleView):
+    pass
 
 class Main(TabbedPanel):
-    pass
+    def __init__(self, table='', **kwargs):
+        super().__init__(**kwargs)
+        txs = MyApp.transactions_list()
+        txs.reverse()
+        data = {'Date': {},
+                'From': {},
+                'To': {},
+                'Amount': {}}
+        for i in range(30):
+            data['Date'][i] = txs[i][0]
+            data['From'][i] = txs[i][1]
+            data['To'][i] = txs[i][2]
+            data['Amount'][i] = txs[i][3]
+
+        column_titles = [x for x in data.keys()]
+        rows_length = len(data[column_titles[0]])
+        table_data = []
+        for y in column_titles:
+            table_data.append({'text':str(y), 'size_hint_y': None, 'height':30, 'bcolor':(.05, .3, .8, 1)})
+
+        for z in range(rows_length):
+            for y in column_titles:
+                table_data.append({'text':str(data[y][z]), 'size_hint_y':None,'height': 20, 'bcolor':(.06, .25, .5, 1)})
+
+        self.ids.table_floor.cols = len(column_titles)
+        self.ids.table_floor.data = table_data
+        txs = MyApp.transactions_list()
+
 
 
 class MyApp(App):
@@ -279,6 +308,39 @@ class MyApp(App):
 
     # returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
     assets_held = assets_to_sell()
+    @staticmethod
+    def transactions_list(ticker=None, conn = conn_tr):
+        cur = conn.cursor()
+
+        if ticker == None:
+            trans = []
+            cur.execute(f"SELECT * FROM history")
+            operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+            for line in operations:
+                trans.append(
+                    [datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+            return trans
+
+        else:
+            trans = {}
+            trans['buy'] = []
+            trans['sell'] = []
+            cur.execute(f"SELECT * FROM history WHERE currency1='{ticker}'")
+            operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+            for line in operations:
+                trans['sell'].append(
+                    [datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+
+            cur.execute(f"SELECT * FROM history WHERE currency2='{ticker}'")
+            operations = sorted(cur.fetchall(), key=lambda x: x[1])
+
+            for line in operations:
+                trans['buy'].append(
+                    [datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d'), line[2], line[3], float(line[4])])
+
+            return trans
     def build(self):
         plt.savefig('foo.png')
         plt.savefig('foo2.png')

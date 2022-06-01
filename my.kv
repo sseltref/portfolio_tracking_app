@@ -1,9 +1,23 @@
 <Main>
 
-    tab_width: (self.content.width - 5) / 4
+    tab_width: (self.content.width - 5) / 5
     do_default_tab: False
     padding: (5, 5)
     tab_pos: 'bottom_mid'
+    TabbedPanelItem:
+        id: datatable
+        text: 'Historia'
+        RecycleView:
+            viewclass: 'CustomLabel'
+            id: table_floor
+
+            RecycleGridLayout:
+                id: table_floor_layout
+                cols: 4
+                default_size:(None, 250)
+                default_size_hint: (1, None)
+                height: self.minimum_height
+                spacing: 5
     TabbedPanelItem:
         text: 'Transakcje'
         orientation: "vertical"
@@ -184,3 +198,11 @@
                         width: 1
                         rectangle: self.x, self.y, self.width, self.height
                 text: 'news 3'
+<CustomLabel@Label>:
+    bcolor: (1,1,1,1)
+    canvas.before:
+        Color:
+            rgba: root.bcolor
+        Rectangle:
+            size: self.size
+            pos: self.pos

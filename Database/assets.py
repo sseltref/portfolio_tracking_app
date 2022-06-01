@@ -148,7 +148,6 @@ def portfolio_values():
 	return values
 	#returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
 
-print(portfolio_values())
 def transactions_list(ticker=None):
 	conn = create_connection('database.db')
 	cur = conn.cursor()
@@ -182,7 +181,7 @@ def transactions_list(ticker=None):
 		return trans
 	#returns dictionary with all transactions of given ticker (sorted by date)
 	#in case of default ticker, function returns all transactions in data order
-
+print(transactions_list())
 def news(n=3):
 	to_export = []
 	assets = assets_to_sell()
