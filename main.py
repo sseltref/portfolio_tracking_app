@@ -27,6 +27,9 @@ class MyApp(App):
         self.apka.ids._chart_img.reload()
         self.apka.ids._chart_img2.reload()
         self.apka.ids.labelval.text = str(x)
+    def update_chart2(self):
+        self.apka.ids._chart_img2.reload()
+
 
 
 
@@ -107,6 +110,8 @@ class MyApp(App):
                 values[int(line[1])] = round(v, 2)
             x = list(values.keys())
             y = list(values.values())
+            for i in range(len(x)):
+                x[i] = datetime.datetime.fromtimestamp(x[i])
         else:
             values, v = {}, 0
 
@@ -142,7 +147,8 @@ class MyApp(App):
 
             x = list(values.keys())
             y = list(values.values())
-
+            for i in range(len(x)):
+                x[i] = datetime.datetime.fromtimestamp(x[i])
         plt.clf()
         plt.style.use('dark_background')
         plt.plot(x, y)
@@ -216,41 +222,60 @@ class MyApp(App):
         for line in cur.fetchall():
             export.append(line[0])
         return export
+
+    @staticmethod
+    def stock_historical(values, date):
+        try:
+            price = values.loc[date.strftime("%Y-%m-%d")]['Close']
+        except:
+            return MyApp.stock_historical(values, date + datetime.timedelta(-1))
+        else:
+            return price
+
+
+
     @staticmethod
     def portfolio_values(conn = conn_tr, ticker = import_tickers()):
         values, v = {}, 0
-
+        all_tickers_history = {}
         cur = conn.cursor()
-
         cur.execute(f"SELECT * FROM history")
         operations = sorted(cur.fetchall(), key=lambda x: x[1])
-
-        conn.close()
 
         # print(ticker)
 
         for line in operations:
-            date = datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d')
-            # print(line)
-            'sell part'
-            try:
-                if line[2] == 'USD':
-                    outcome = float(line[4])
-                else:
-                    x = yf.download(ticker[line[2]], date, date)
-                    outcome = x['Close'].tolist()[0] * float(line[4])
-                # print(outcome)
+            date = datetime.datetime.fromtimestamp(line[1])
+            if ticker[line[2]] not in all_tickers_history:
+                yo = yf.Ticker(ticker[line[2]]).history(period='max')
+                all_tickers_history[ticker[line[2]]] = yo
 
-                y = yf.download(ticker[line[3]], date, date)
-                income = y['Close'].tolist()[0] * float(line[4])
+            if ticker[line[3]] not in all_tickers_history:
+                yo = yf.Ticker(ticker[line[3]]).history(period='max')
+                all_tickers_history[ticker[line[3]]] = yo
 
-                v += round(income - outcome, 2)
-                values[line[1]] = v
+            sell = MyApp.stock_historical(all_tickers_history[ticker[line[2]]], date)
+            buy = MyApp.stock_historical(all_tickers_history[ticker[line[3]]], date)
 
-            except:
-                continue
 
-        return values
+            v += buy * float(line[4]) - sell * float(line[4])
+            values[line[1]] = v
+
+        # print(line[1], v)
+
+        # print(date, ticker[line[2]], ticker[line[3]], line)
+        # print(values[line[1]], v)
+
+        x = list(values.keys())
+        y = list(values.values())
+        for i in range(len(x)):
+            x[i] = datetime.datetime.fromtimestamp(x[i])
+        plt.clf()
+        plt.style.use('dark_background')
+        plt.plot(x, y)
+        plt.ylabel('Value')
+        plt.xlabel('Date', rotation=0)
+        plt.savefig('foo2.png')
 
     # returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
     assets_held = assets_to_sell()

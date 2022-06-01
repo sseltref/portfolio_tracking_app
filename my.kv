@@ -132,6 +132,16 @@
                     app.historical_value(app.asset)
                 on_release:
                     app.update_chart(app.value(app.asset))
+            Button:
+                size_hint: 0.2, 0.1
+
+                font_size: 0.15 * self.width
+                pos_hint: {'center_x': 0.2, 'center_y': 0.2}
+                text: 'Show total'
+                on_press:
+                    app.portfolio_values()
+                on_release:
+                    app.update_chart2()
             Label:
                 text: "Current value of the asset"
                 pos_hint: {'center_x': 0.3, 'center_y': 0.1}

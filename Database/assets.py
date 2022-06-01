@@ -148,7 +148,7 @@ def portfolio_values():
 	return values
 	#returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
 
-
+print(portfolio_values())
 def transactions_list(ticker=None):
 	conn = create_connection('database.db')
 	cur = conn.cursor()
