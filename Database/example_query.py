@@ -17,6 +17,7 @@ def make_transaction(conn, tr_date, currency1, currency2, volume):
 	conn.commit()
 
 
+
 def last_n_days_transactions(conn, ticker, date, n):
 	cur = conn.cursor()
 	transactions = []

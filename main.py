@@ -47,7 +47,6 @@ class Main(TabbedPanel):
 
         self.ids.table_floor.cols = len(column_titles)
         self.ids.table_floor.data = table_data
-        txs = MyApp.transactions_list()
 
 
 
@@ -58,6 +57,32 @@ class MyApp(App):
         self.apka.ids.labelval.text = str(x)
     def update_chart2(self):
         self.apka.ids._chart_img2.reload()
+    def update_txs(self):
+        txs = MyApp.transactions_list()
+        txs.reverse()
+        data = {'Date': {},
+                'From': {},
+                'To': {},
+                'Amount': {}}
+        for i in range(30):
+            data['Date'][i] = txs[i][0]
+            data['From'][i] = txs[i][1]
+            data['To'][i] = txs[i][2]
+            data['Amount'][i] = txs[i][3]
+
+        column_titles = [x for x in data.keys()]
+        rows_length = len(data[column_titles[0]])
+        table_data = []
+        for y in column_titles:
+            table_data.append({'text': str(y), 'size_hint_y': None, 'height': 30, 'bcolor': (.05, .3, .8, 1)})
+
+        for z in range(rows_length):
+            for y in column_titles:
+                table_data.append(
+                    {'text': str(data[y][z]), 'size_hint_y': None, 'height': 20, 'bcolor': (.06, .25, .5, 1)})
+
+        self.apka.ids.table_floor.cols = len(column_titles)
+        self.apka.ids.table_floor.data = table_data
 
 
 
@@ -85,6 +110,7 @@ class MyApp(App):
         cur.execute('INSERT INTO history(tr_date, currency1, currency2, volume) VALUES (?, ?, ?, ?)',
                     (tr_date, currency1, currency2, float(volume)))
         conn.commit()
+        self.update_txs()
 
     ''' INSERT INTO tasks(name,priority,status_id,project_id,begin_date,end_date)
                   VALUES(?,?,?,?,?,?) '''
