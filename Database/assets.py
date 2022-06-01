@@ -85,21 +85,33 @@ def current_portfolio_value():
 	ticker = import_tickers()
 	values = value()
 	v = 0
+	today = datetime.date.today()
 
 	for line in values:
 		if line == 'USD':
 			v += values[line]
 		else:
 			stock = yf.Ticker(ticker[line])
-			price = stock.info['regularMarketPrice']
+			hist = stock.history(period='max')
+			price = hist.loc[today.strftime("%Y-%m-%d")]['Close']
 			v += price*values[line]
 
 		#print(line, values[line], v)
 	return round(v, 2)
 	#returns current value of portfolio (in USD)
 
+def stock_historical(values, date):
+	try:
+		price = values.loc[date.strftime("%Y-%m-%d")]['Close']
+	except:
+		return stock_historical(values, date + datetime.timedelta(-1))
+	else:
+		return price
+
+
 def portfolio_values():
 	values, v = {}, 0
+	all_tickers_history = {}
 	conn = create_connection('database.db')
 	cur = conn.cursor()
 	
@@ -112,26 +124,27 @@ def portfolio_values():
 	#print(ticker)
 
 	for line in operations:
-		date = datetime.datetime.fromtimestamp(line[1]).strftime('%Y-%m-%d')
-		#print(line)
-		'sell part'
-		try:
-			if line[2] == 'USD':
-				outcome = float(line[4])
-			else:
-				x = yf.download(ticker[line[2]], date, date)
-				outcome = x['Close'].tolist()[0] * float(line[4])
-				#print(outcome)
+		date = datetime.datetime.fromtimestamp(line[1])
+		if ticker[line[2]] not in all_tickers_history:
+			yo = yf.Ticker(ticker[line[2]]).history(period='max')
+			all_tickers_history[ticker[line[2]]] = yo
 
-			y = yf.download(ticker[line[3]], date, date)
-			income = y['Close'].tolist()[0] * float(line[4])
+		if ticker[line[3]] not in all_tickers_history:
+			yo = yf.Ticker(ticker[line[3]]).history(period='max')
+			all_tickers_history[ticker[line[3]]] = yo
 
-			v += round(income - outcome, 2)
-			values[line[1]] = v
 
-		except:
-			continue
+		sell = stock_historical(all_tickers_history[ticker[line[2]]], date)
+		buy = stock_historical(all_tickers_history[ticker[line[3]]], date)
 
+		v += buy*float(line[4]) - sell*float(line[4])
+		values[line[1]] = v
+
+
+		#print(line[1], v)
+
+		#print(date, ticker[line[2]], ticker[line[3]], line)
+		#print(values[line[1]], v)
 	return values
 	#returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
 
@@ -190,4 +203,4 @@ def news(n=3):
 	#returns random n (default n=3) news as a list
 
 
-print(current_portfolio_value())
+print(portfolio_values())
