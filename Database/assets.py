@@ -81,23 +81,19 @@ def import_tickers():
 
 	return ticker
 
-def current_portfolio_value():
-	ticker = import_tickers()
-	values = value()
-	v = 0
-	today = datetime.date.today()
+def current_portfolio_value(ticker=import_tickers(), values=value()):
+    v = 0
+    for line in values:
+        print(line, values[line])
+        if line == 'USD':
+            v += values[line]
+        else:
+            hist = yf.Ticker(ticker[line]).history(period='max')
+            cur_value = stock_historical(hist, datetime.date.today())
 
-	for line in values:
-		if line == 'USD':
-			v += values[line]
-		else:
-			stock = yf.Ticker(ticker[line])
-			hist = stock.history(period='max')
-			price = hist.loc[today.strftime("%Y-%m-%d")]['Close']
-			v += price*values[line]
+            v += cur_value
 
-		#print(line, values[line], v)
-	return round(v, 2)
+    return round(v, 2)
 	#returns current value of portfolio (in USD)
 
 def stock_historical(values, date):
@@ -201,5 +197,4 @@ def news(n=3):
 	return random.sample(to_export, n)
 	#returns random n (default n=3) news as a list
 
-
-print(news(1))
+current_portfolio_value()
