@@ -3,8 +3,11 @@ kivy.require('2.0.0')
 import datetime
 from kivy.app import App
 from kivy.uix.tabbedpanel import TabbedPanel
+from kivy.uix.popup import Popup
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -20,6 +23,9 @@ import webbrowser
 class Button(Button):
     pass
 class RecycleView(RecycleView):
+    pass
+
+class P(FloatLayout):
     pass
 
 class Main(TabbedPanel):
@@ -104,10 +110,12 @@ class MyApp(App):
         return conn
 
     def date_to_epoch(self, year, month, day):
-        date = datetime.datetime(int(year),int(month), int(day))
-        date = date.timestamp()
-
-        return date
+        try:
+            date = datetime.datetime(int(year),int(month), int(day))
+            date = date.timestamp()
+            return date
+        except:
+            return self.date_to_epoch(year, month, str(int(day)-1))
 
 
     def make_transaction(self, conn, tr_date, currency1, currency2, volume):
@@ -256,6 +264,7 @@ class MyApp(App):
             ticker[line[0]] = line[1]
 
         return ticker
+
     @staticmethod
     def current_portfolio_value(ticker=import_tickers(), values=value()):
         v = 0
@@ -263,9 +272,10 @@ class MyApp(App):
             if line == 'USD':
                 v += values[line]
             else:
-                stock = yf.Ticker(ticker[line])
-                price = stock.info['regularMarketPrice']
-                v += price * values[line]
+                hist = yf.Ticker(ticker[line]).history(period='max')
+                cur_value = MyApp.stock_historical(hist, datetime.date.today())
+
+                v += cur_value
 
         # print(line, values[line], v)
         return round(v, 2)
@@ -339,6 +349,7 @@ class MyApp(App):
 
     # returns historical value ins USD of all assets in portfolio as a dictionary (key - date in epoch)
     assets_held = assets_to_sell()
+
     @staticmethod
     def transactions_list(ticker=None, conn = conn_tr):
         cur = conn.cursor()
@@ -373,6 +384,20 @@ class MyApp(App):
 
             return trans
 
+
+    def open_popup(self):
+        show = P()
+        self.box_popup = BoxLayout(orientation = 'horizontal')
+
+        popupWindow = Popup(title="INFO", content=show, size_hint=(None, None), size=(400, 400))
+        
+
+        self.box_popup.add_widget(Button(text = "OK", on_press = lambda: popupWindow.dismiss(), size_hint=(0.8, 0.2)))
+    
+    
+        popupWindow.open()
+
+
     def news(self, n=3, conn=conn_tr):
         try:
             to_export = []
@@ -390,16 +415,18 @@ class MyApp(App):
                                           '%Y-%m-%d')])
             news = random.sample(to_export, n)
         except:
-            print("news loading error")
+            print("News loading error")
         self.link1 = news[0][1]
         self.link2 = news[1][1]
         self.link3 = news[2][1]
         self.news1 = news[0][0]
         self.news2 = news[1][0]
         self.news3 = news[2][0]
-        return "Wiadomości"
+        return "News"
 
     def build(self):
+        self.icon = 'icons and layout/wallet.png'
+        self.title = 'Portfolio Tracker'
         plt.savefig('foo.png')
         plt.savefig('foo2.png')
         self.apka = Main()
